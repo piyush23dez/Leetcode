@@ -22,13 +22,9 @@ struct HashTable<Key: Hashable,  Value> {
         buckets = Array<Bucket>(repeating: [], count: capacity)
     }
     
-    
-    
     func index(for key: Key) -> Int {
         return abs(key.hashValue).quotientAndRemainder(dividingBy: buckets.count).remainder
     }
-    
-    
     
     @discardableResult
     mutating func updateValue(value: Value, for key: Key) -> Value? {
@@ -47,8 +43,6 @@ struct HashTable<Key: Hashable,  Value> {
         count += 1
         return nil
     }
-    
-    
     
     
     /* This function converts the key into an array index.
@@ -1096,26 +1090,33 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         
-//        var hashTable = HashTable<String, String>(capacity: 5)
+        var hashTable = HashTable<String, String>(capacity: 5)
 //
-//        hashTable["firstName"] = "Steve"
-//        hashTable["lastName"] = "Jobs"
-//        hashTable["hobbies"] = "Programming Swift"
-//
-//        print(hashTable)
-//        print(hashTable.debugDescription)
-//
-//        let x = hashTable["firstName"]
-//        hashTable["firstName"] = "Tim"
-//
-//        let y = hashTable["firstName"]
-//        hashTable["firstName"] = nil
-//
-//        let z = hashTable["firstName"]
-//
-//        print(hashTable)
+        hashTable["firstName"] = "Steve"
+        hashTable["lastName"] = "Jobs"
+        hashTable["hobbies"] = "Programming Swift"
 
+        print(hashTable)
 
+        if let firstName = hashTable["firstName"] {
+            print(firstName)
+        }
+        
+        if let lastName = hashTable["lastName"] {
+            print(lastName)
+        } else {
+            print("lastName key not in hash table")
+        }
+
+        let x = hashTable["firstName"]
+        hashTable["firstName"] = "Tim"
+        
+        let y = hashTable["firstName"]
+        hashTable["firstName"] = nil
+        
+        let z = hashTable["firstName"]
+        
+        print(x, y , z)
 //        let columns = 4
 //        let rows = 4
 //        let randomArr = fisherRandom(array: Array(0..<16))
