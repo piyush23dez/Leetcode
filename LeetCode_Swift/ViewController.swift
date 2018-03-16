@@ -11,6 +11,136 @@
 
 import UIKit
 
+struct HashTable<Key: Hashable,  Value> {
+    typealias Element = (key: Key, value: Value)
+    typealias Bucket = [Element]
+    var buckets = [Bucket]()
+    
+    private (set) var count = 0
+    
+    init(capacity: Int) {
+        buckets = Array<Bucket>(repeating: [], count: capacity)
+    }
+    
+    
+    
+    func index(for key: Key) -> Int {
+        return abs(key.hashValue).quotientAndRemainder(dividingBy: buckets.count).remainder
+    }
+    
+    
+    
+    @discardableResult
+    mutating func updateValue(value: Value, for key: Key) -> Value? {
+        //first check to see if the value is already inside a bucket. If it is, we update the value at the index
+        let keyIndex = index(for: key)
+        
+        for (i, element) in buckets[keyIndex].enumerated() where element.key == key {
+            let oldValue = element.value
+            buckets[keyIndex][i].value = value
+            return oldValue
+        }
+        
+        /*If execution reaches this point, it means the key doesn't exist inside the hash table.
+          we have to add the new key-value pair at the end of the bucket.*/
+        buckets[keyIndex].append((key: key, value: value))
+        count += 1
+        return nil
+    }
+    
+    
+    
+    
+    /* This function converts the key into an array index.
+       That returns the bucket number, but this bucket may be used by more than one key if there were collisions.
+       now we iterate through that index's list of key-value pairs,
+       where we compare the key of each element with the key required. */
+    
+    public func value(for key: Key) -> Value? {
+        let keyIndex = self.index(for: key)
+        for (i, element) in buckets[keyIndex].enumerated() where element.key == key {
+            return buckets[keyIndex][i].value
+        }
+        return nil
+    }
+    
+    /* we first check to see if the value is in the bucket.
+      If it is, remove the key in the chain, decrement the count, and
+      return the value. Otherwise, return nil, since we couldn't find the key-value pair to remove.*/
+   
+    mutating func removeValue(for key : Key) -> Value? {
+        //first check to see if the value is already inside a bucket. If it is, we update the value at the index
+        let keyIndex = index(for: key)
+        
+        for (i, element) in buckets[keyIndex].enumerated() where element.key == key {
+            buckets[keyIndex].remove(at: i)
+            return element.value
+        }
+        
+        count -= 1
+        return nil
+    }
+    
+    public subscript(key: Key) -> Value? {
+        get {
+            return value(for: key)
+        }
+        set {
+            if let newValue = newValue {
+                updateValue(value: newValue, for: key)
+            }
+        }
+    }
+}
+
+
+
+struct RingBuffer<T> {
+    var array = [T?]()
+    var readIndex = 0
+    var writeIndex = 0
+    
+    init(count: Int) {
+        array = Array(repeating: nil, count: count)
+    }
+    
+    var availableSpaceForReading: Int {
+        return writeIndex - readIndex
+    }
+    
+    var availbleSpaceForWriting: Int {
+        return array.count - availableSpaceForReading
+    }
+    
+    var isFull: Bool {
+        return availbleSpaceForWriting == 0
+    }
+    
+    var isEmpty: Bool {
+        return availableSpaceForReading ==  0
+    }
+    
+    mutating func write(element: T) -> Bool {
+        if !isFull {
+            array[writeIndex % array.count] = element
+            writeIndex += 1
+            return true
+        }
+        return false
+    }
+    
+    mutating func read() -> T? {
+        if !isEmpty {
+            let element = array[readIndex % array.count]
+            readIndex += 1
+            return element
+        }
+        
+        return nil
+    }
+}
+
+
 
 func createArray<T>(value: T, count: Int) -> [T] {
     return Array<T>(repeating: value, count: count)
@@ -965,21 +1095,41 @@ class ViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-
-        let columns = 4
-        let rows = 4
-        let randomArr = fisherRandom(array: Array(0..<16))
-
-        var cookies = ArrayFactory(columns: columns, rows: rows, defaultValue: 0)
-        for i: Int in 0..<columns {
-            var slicedArray = Array(randomArr[(i*rows)..<rows*columns])
-            for j: Int in 0..<rows {
-                print(slicedArray)
-                cookies[i, j] = slicedArray[j]
-            }
-        }
         
-        print(cookies.array)
+//        var hashTable = HashTable<String, String>(capacity: 5)
+//
+//        hashTable["firstName"] = "Steve"
+//        hashTable["lastName"] = "Jobs"
+//        hashTable["hobbies"] = "Programming Swift"
+//
+//        print(hashTable)
+//        print(hashTable.debugDescription)
+//
+//        let x = hashTable["firstName"]
+//        hashTable["firstName"] = "Tim"
+//
+//        let y = hashTable["firstName"]
+//        hashTable["firstName"] = nil
+//
+//        let z = hashTable["firstName"]
+//
+//        print(hashTable)
+
+
+//        let columns = 4
+//        let rows = 4
+//        let randomArr = fisherRandom(array: Array(0..<16))
+//
+//        var cookies = ArrayFactory(columns: columns, rows: rows, defaultValue: 0)
+//        for i: Int in 0..<columns {
+//            var slicedArray = Array(randomArr[(i*rows)..<rows*columns])
+//            for j: Int in 0..<rows {
+//                print(slicedArray)
+//                cookies[i, j] = slicedArray[j]
+//            }
+//        }
+//
+//        print(cookies.array)
 //
         
 //        add(element: 8)
