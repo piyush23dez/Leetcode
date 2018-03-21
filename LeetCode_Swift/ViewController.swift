@@ -17,11 +17,9 @@ public class Vertex {
     var neighbors: Array<Edge> = []
     var isVisited: Bool = false
 
-    
     init() {
         self.neighbors = Array<Edge>()
     }
-    
 }
 
 //a basic edge data structure
@@ -64,7 +62,7 @@ public class SwiftGraph {
     }
     
     //add an edge to source vertex
-    func addEdge(source: Vertex, neighbor: Vertex, weight: Int) {
+    func addEdge(source: Vertex, neighbor: Vertex, weight: Int = 0) {
         
         //create a new edge
         let newEdge = Edge()
@@ -75,7 +73,7 @@ public class SwiftGraph {
         source.neighbors.append(newEdge)
         
         //check for undirected graph
-        if (isDirected == false) {
+        if isDirected == false {
             
             //create a new reversed edge
             let reverseEdge = Edge()
@@ -99,15 +97,16 @@ public class SwiftGraph {
         while !graphQueue.isEmpty {
             
             //traverse the next queued vertex
-            let visitedItem = graphQueue.dequeue()
+            let vertex = graphQueue.dequeue()
             
             //add unvisited vertices to the queue
-            for nearbyNeighbor in visitedItem!.neighbors {
+            for nearbyNeighbor in vertex!.neighbors {
                 if nearbyNeighbor.neighbor.isVisited == false {
                     graphQueue.enqueue(nearbyNeighbor.neighbor)
                 }
             }
-            visitedItem?.isVisited = true
+            vertex?.isVisited = true
+            print("traversed vertex: \(vertex!.key!)..")
         } //end while
     } //end function
 }
@@ -1223,34 +1222,60 @@ class ViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        let graph = SwiftGraph()
         
-        var hashTable = HashTable<String, String>(capacity: 5)
+        let nodeA = graph.addVertex(key: "a")
+        let nodeB = graph.addVertex(key: "b")
+        let nodeC = graph.addVertex(key: "c")
+        let nodeD = graph.addVertex(key: "d")
+        let nodeE = graph.addVertex(key: "e")
+        let nodeF = graph.addVertex(key: "f")
+        let nodeG = graph.addVertex(key: "g")
+        let nodeH = graph.addVertex(key: "h")
+        
+        graph.addEdge(source: nodeA, neighbor: nodeB)
+        graph.addEdge(source: nodeA, neighbor: nodeC)
+        graph.addEdge(source: nodeB, neighbor: nodeD)
+        graph.addEdge(source: nodeB, neighbor: nodeE)
+        graph.addEdge(source: nodeC, neighbor: nodeF)
+        graph.addEdge(source: nodeC, neighbor: nodeG)
+        graph.addEdge(source: nodeE, neighbor: nodeH)
+        graph.addEdge(source: nodeE, neighbor: nodeF)
+        graph.addEdge(source: nodeF, neighbor: nodeG)
+        
+        graph.traverseGraphBFS(startingVertex: nodeA)
+        print("graph traversal complete..")")
+        
+        
+        
 //
-        hashTable["firstName"] = "Steve"
-        hashTable["lastName"] = "Jobs"
-        hashTable["hobbies"] = "Programming Swift"
-
-        print(hashTable)
-
-        if let firstName = hashTable["firstName"] {
-            print(firstName)
-        }
-        
-        if let lastName = hashTable["lastName"] {
-            print(lastName)
-        } else {
-            print("lastName key not in hash table")
-        }
-
-        let x = hashTable["firstName"]
-        hashTable["firstName"] = "Tim"
-        
-        let y = hashTable["firstName"]
-        hashTable["firstName"] = nil
-        
-        let z = hashTable["firstName"]
-        
-        print(x, y , z)
+//        var hashTable = HashTable<String, String>(capacity: 5)
+////
+//        hashTable["firstName"] = "Steve"
+//        hashTable["lastName"] = "Jobs"
+//        hashTable["hobbies"] = "Programming Swift"
+//
+//        print(hashTable)
+//
+//        if let firstName = hashTable["firstName"] {
+//            print(firstName)
+//        }
+//
+//        if let lastName = hashTable["lastName"] {
+//            print(lastName)
+//        } else {
+//            print("lastName key not in hash table")
+//        }
+//
+//        let x = hashTable["firstName"]
+//        hashTable["firstName"] = "Tim"
+//
+//        let y = hashTable["firstName"]
+//        hashTable["firstName"] = nil
+//
+//        let z = hashTable["firstName"]
+//
+//        print(x, y , z)
 //        let columns = 4
 //        let rows = 4
 //        let randomArr = fisherRandom(array: Array(0..<16))
