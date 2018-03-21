@@ -11,19 +11,17 @@ import UIKit
 
 
 //a basic vertex data structure
-
 public class Vertex {
     var key: String?
     var neighbors: Array<Edge> = []
     var isVisited: Bool = false
-
+    
     init() {
         self.neighbors = Array<Edge>()
     }
 }
 
 //a basic edge data structure
-
 public class Edge {
     
     var neighbor: Vertex
@@ -36,6 +34,7 @@ public class Edge {
     
 }
 
+
 //a default directed graph canvas
 public class SwiftGraph {
     
@@ -46,6 +45,11 @@ public class SwiftGraph {
         canvas = Array<Vertex>()
         isDirected = true
     }
+}
+
+
+//add vertex of graph
+extension SwiftGraph {
     
     //create a new vertex
     func addVertex(key: String) -> Vertex {
@@ -54,14 +58,20 @@ public class SwiftGraph {
         let childVertex: Vertex = Vertex()
         childVertex.key = key
         
-        
         //add the vertex to the graph canvas
         canvas.append(childVertex)
         
         return childVertex
     }
+}
+
+
+
+
+//add edges of vertex
+extension SwiftGraph {
     
-    //add an edge to source vertex
+//add an edge to source vertex
     func addEdge(source: Vertex, neighbor: Vertex, weight: Int = 0) {
         
         //create a new edge
@@ -84,6 +94,12 @@ public class SwiftGraph {
             neighbor.neighbors.append(reverseEdge)
         }
     }
+}
+
+
+
+//breadth first search of graph
+extension SwiftGraph {
     
     //breadth-first traversal
     func traverseGraphBFS(startingVertex: Vertex) {
@@ -110,6 +126,9 @@ public class SwiftGraph {
         } //end while
     } //end function
 }
+
+
+
 
 
 public struct Queue<T> {
@@ -171,7 +190,7 @@ struct HashTable<Key: Hashable,  Value> {
         }
         
         /*If execution reaches this point, it means the key doesn't exist inside the hash table.
-          we have to add the new key-value pair at the end of the bucket.*/
+         we have to add the new key-value pair at the end of the bucket.*/
         buckets[keyIndex].append((key: key, value: value))
         count += 1
         return nil
@@ -179,9 +198,9 @@ struct HashTable<Key: Hashable,  Value> {
     
     
     /* This function converts the key into an array index.
-       That returns the bucket number, but this bucket may be used by more than one key if there were collisions.
-       now we iterate through that index's list of key-value pairs,
-       where we compare the key of each element with the key required. */
+     That returns the bucket number, but this bucket may be used by more than one key if there were collisions.
+     now we iterate through that index's list of key-value pairs,
+     where we compare the key of each element with the key required. */
     
     public func value(for key: Key) -> Value? {
         let keyIndex = self.index(for: key)
@@ -192,9 +211,9 @@ struct HashTable<Key: Hashable,  Value> {
     }
     
     /* we first check to see if the value is in the bucket.
-      If it is, remove the key in the chain, decrement the count, and
-      return the value. Otherwise, return nil, since we couldn't find the key-value pair to remove.*/
-   
+     If it is, remove the key in the chain, decrement the count, and
+     return the value. Otherwise, return nil, since we couldn't find the key-value pair to remove.*/
+    
     mutating func removeValue(for key : Key) -> Value? {
         //first check to see if the value is already inside a bucket. If it is, we update the value at the index
         let keyIndex = index(for: key)
@@ -485,7 +504,7 @@ func quickSort(array: [Int]) -> [Int] {
 //Ducth Flag Partition
 func dutchPartition(array: inout [Int], low: Int, high: Int, pivotIndex: Int) -> (Int, Int) {
     let pivot = array[pivotIndex]
-  
+    
     var i = low
     var j = low
     var n = high
@@ -570,8 +589,8 @@ func kthEelement(array: [Int], order k: Int) -> Int {
         return i
     }
     
-   //Apply binary search after partition of the array
-   func randomSelect(array: inout [Int], low: Int, high: Int, k: Int) -> Int {
+    //Apply binary search after partition of the array
+    func randomSelect(array: inout [Int], low: Int, high: Int, k: Int) -> Int {
         let partitionIndex = partition(array: &array, low: low, high: high)
         if low < high {
             if k < partitionIndex {
@@ -581,7 +600,7 @@ func kthEelement(array: [Int], order k: Int) -> Int {
             } else {
                 return array[partitionIndex]
             }
-         
+            
         } else {
             return array[low]
         }
@@ -759,9 +778,9 @@ func linearSeacrh<T: Equatable>(array: [T], object: T) -> Int? {
 
 //Iterative Binary Search
 func binarySearch<T: Comparable>(array: [T], key: T) -> Int? {
-   var lowerBound = 0
-   var upperBound = array.count //i.e 19 elements, last index willl be 18
-   let mid = lowerBound + (upperBound-lowerBound)/2
+    var lowerBound = 0
+    var upperBound = array.count //i.e 19 elements, last index willl be 18
+    let mid = lowerBound + (upperBound-lowerBound)/2
     
     while lowerBound < upperBound {
         if key == array[mid] {
@@ -1155,16 +1174,16 @@ class ViewController: UIViewController {
         
         //put element at the end of list
         list.append(element)
-
-         //element is added as key and last array index as index.)
+        
+        //element is added as key and last array index as index.)
         hashMap.updateValue(list.count-1, forKey: element)
     }
     
     func remove(element: Int) {
         /* (1) Check if x is present by doing a hash map lookup.
-           (2) If present, then find its index and remove it from hash map.
-           (3) Swap the last element with this element in array and remove the last element.
-           (4) Update index of last element in hash map. */
+         (2) If present, then find its index and remove it from hash map.
+         (3) Swap the last element with this element in array and remove the last element.
+         (4) Update index of last element in hash map. */
         
         //(1) Check if x is present by doing a hash map lookup.
         guard let elementeIndex = hashMap[element] else {
@@ -1178,7 +1197,7 @@ class ViewController: UIViewController {
         list.swapAt(elementeIndex, list.count-1)
         //Remove last element (This is O(1))
         list.remove(at: list.count-1)
-
+        
         //(4) Update index of last element in hash map. replace elementeIndex with new index (list.count-1) */
         hashMap.updateValue(list.count-1, forKey: elementeIndex)
     }
@@ -1197,7 +1216,7 @@ class ViewController: UIViewController {
         return index
     }
     
-  
+    
     func fisherRandom(array: [Int]) -> [Int] {
         var a = array
         for i in array {
@@ -1212,7 +1231,7 @@ class ViewController: UIViewController {
     var previousRandoms = Set<UInt32>()
     func getUniqueRandom(num: Int) -> UInt32 {
         var random = arc4random_uniform(UInt32(num))
-       
+        
         while previousRandoms.contains(random) {
             random = arc4random_uniform(UInt32(num))
         }       
@@ -1244,67 +1263,67 @@ class ViewController: UIViewController {
         graph.addEdge(source: nodeF, neighbor: nodeG)
         
         graph.traverseGraphBFS(startingVertex: nodeA)
-        print("graph traversal complete..")")
+        print("graph traversal complete..")
         
         
         
-//
-//        var hashTable = HashTable<String, String>(capacity: 5)
-////
-//        hashTable["firstName"] = "Steve"
-//        hashTable["lastName"] = "Jobs"
-//        hashTable["hobbies"] = "Programming Swift"
-//
-//        print(hashTable)
-//
-//        if let firstName = hashTable["firstName"] {
-//            print(firstName)
-//        }
-//
-//        if let lastName = hashTable["lastName"] {
-//            print(lastName)
-//        } else {
-//            print("lastName key not in hash table")
-//        }
-//
-//        let x = hashTable["firstName"]
-//        hashTable["firstName"] = "Tim"
-//
-//        let y = hashTable["firstName"]
-//        hashTable["firstName"] = nil
-//
-//        let z = hashTable["firstName"]
-//
-//        print(x, y , z)
-//        let columns = 4
-//        let rows = 4
-//        let randomArr = fisherRandom(array: Array(0..<16))
-//
-//        var cookies = ArrayFactory(columns: columns, rows: rows, defaultValue: 0)
-//        for i: Int in 0..<columns {
-//            var slicedArray = Array(randomArr[(i*rows)..<rows*columns])
-//            for j: Int in 0..<rows {
-//                print(slicedArray)
-//                cookies[i, j] = slicedArray[j]
-//            }
-//        }
-//
-//        print(cookies.array)
-//
+        //
+        //        var hashTable = HashTable<String, String>(capacity: 5)
+        ////
+        //        hashTable["firstName"] = "Steve"
+        //        hashTable["lastName"] = "Jobs"
+        //        hashTable["hobbies"] = "Programming Swift"
+        //
+        //        print(hashTable)
+        //
+        //        if let firstName = hashTable["firstName"] {
+        //            print(firstName)
+        //        }
+        //
+        //        if let lastName = hashTable["lastName"] {
+        //            print(lastName)
+        //        } else {
+        //            print("lastName key not in hash table")
+        //        }
+        //
+        //        let x = hashTable["firstName"]
+        //        hashTable["firstName"] = "Tim"
+        //
+        //        let y = hashTable["firstName"]
+        //        hashTable["firstName"] = nil
+        //
+        //        let z = hashTable["firstName"]
+        //
+        //        print(x, y , z)
+        //        let columns = 4
+        //        let rows = 4
+        //        let randomArr = fisherRandom(array: Array(0..<16))
+        //
+        //        var cookies = ArrayFactory(columns: columns, rows: rows, defaultValue: 0)
+        //        for i: Int in 0..<columns {
+        //            var slicedArray = Array(randomArr[(i*rows)..<rows*columns])
+        //            for j: Int in 0..<rows {
+        //                print(slicedArray)
+        //                cookies[i, j] = slicedArray[j]
+        //            }
+        //        }
+        //
+        //        print(cookies.array)
+        //
         
-//        add(element: 8)
-//        add(element: 2)
-//        add(element: 4)
-//        add(element: 6)
-//        add(element: 9)
-//        add(element: 1)
-//        add(element: 0)
-//
-//        remove(element: 0)
+        //        add(element: 8)
+        //        add(element: 2)
+        //        add(element: 4)
+        //        add(element: 6)
+        //        add(element: 9)
+        //        add(element: 1)
+        //        add(element: 0)
+        //
+        //        remove(element: 0)
         //print(search(element: 4))
-
+        
         //print(list)
-
+        
         super.viewDidLoad()
         //let len = lengthOfLongestSubstring(s: "abcabcbb")
         //print(len)
@@ -1346,64 +1365,64 @@ class ViewController: UIViewController {
         //var array = [3,3,4]
         //q14.findDuplicates(array: &array)
         
-//        let test1 = [(1...3), (2...6), (8...10), (7...11)]
-//
-//        let result = combinedIntervals(intervals: test1)
-//        print(result)
+        //        let test1 = [(1...3), (2...6), (8...10), (7...11)]
+        //
+        //        let result = combinedIntervals(intervals: test1)
+        //        print(result)
         
         //let comb = Medium_017_Letter_Combinations_Of_A_Phone_Number.letterCombinations("23")
-      //  print(comb)
+        //  print(comb)
         
-//        var tree = BinarySearchTree()
-//        tree.root = BinaryTreeNode(value: 20)
-//        tree.root?.leftChild = BinaryTreeNode(value: 8)
-//        tree.root?.rightChild = BinaryTreeNode(value: 22)
-//        tree.root?.leftChild?.leftChild = BinaryTreeNode(value: 4)
-//        tree.root?.leftChild?.rightChild = BinaryTreeNode(value: 12)
-//        tree.root?.leftChild?.rightChild?.leftChild = BinaryTreeNode(value: 10)
-//        tree.root?.leftChild?.rightChild?.rightChild = BinaryTreeNode(value: 14)
-//
-//        var n1 = 10, n2 = 14;
-//        var t = tree.findLCA(node: tree.root, n1: n1, n2: n2)
-//        print("LCA of \(n1) and \(n2) is \(t?.value)")
-        
-        
-//        let a = [9, 7, 5, 2, 8, 6, 4]
-//
-//        print(kthEelement(array: a, order: 0))
-//        print(kthEelement(array: a, order: 1))
-//        print(kthEelement(array: a, order: 2))
-//        print(kthEelement(array: a, order: 3))
-//        print(kthEelement(array: a, order: 4))
-//        print(kthEelement(array: a, order: 5))
-//        print(kthEelement(array: a, order: 6))
-
+        //        var tree = BinarySearchTree()
+        //        tree.root = BinaryTreeNode(value: 20)
+        //        tree.root?.leftChild = BinaryTreeNode(value: 8)
+        //        tree.root?.rightChild = BinaryTreeNode(value: 22)
+        //        tree.root?.leftChild?.leftChild = BinaryTreeNode(value: 4)
+        //        tree.root?.leftChild?.rightChild = BinaryTreeNode(value: 12)
+        //        tree.root?.leftChild?.rightChild?.leftChild = BinaryTreeNode(value: 10)
+        //        tree.root?.leftChild?.rightChild?.rightChild = BinaryTreeNode(value: 14)
+        //
+        //        var n1 = 10, n2 = 14;
+        //        var t = tree.findLCA(node: tree.root, n1: n1, n2: n2)
+        //        print("LCA of \(n1) and \(n2) is \(t?.value)")
         
         
-//        var list = [ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
-//        //dutchPartition(array: &list, low: 0, high: list.count-1, pivotIndex: 10)
-//        quickSortDutch(array: &list, low: 0, high: list.count-1)
-//        print(list)
+        //        let a = [9, 7, 5, 2, 8, 6, 4]
+        //
+        //        print(kthEelement(array: a, order: 0))
+        //        print(kthEelement(array: a, order: 1))
+        //        print(kthEelement(array: a, order: 2))
+        //        print(kthEelement(array: a, order: 3))
+        //        print(kthEelement(array: a, order: 4))
+        //        print(kthEelement(array: a, order: 5))
+        //        print(kthEelement(array: a, order: 6))
         
-//        var list = [ 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1, 8 ]
-//        quickSortLumoto(array: &list, low: 0, high: list.count - 1)
-//        print(list)
-//        binarySearch(numbers, key: 43, range: 0 ..< numbers.count)
-//        let arr = Heap.heapsort(array:[3, 5, 8, 1, 2, 9], order: >) // [1, 2, 3, 5, 8, 9]
-//        print(arr)
         
-//        var array = [1, 2, 3, 4, 5, 6, 7]
-//        shuffleArray(array: &array)
-//        //let bool = hasPairSum(array: array, sum: 8)
-//        print(array)
-//
-//        let resut = minChange(coins: [1, 3, 4], sum: 5)
-//        print(resut)
+        
+        //        var list = [ 10, 0, 3, 9, 2, 14, 8, 27, 1, 5, 8, -1, 26 ]
+        //        //dutchPartition(array: &list, low: 0, high: list.count-1, pivotIndex: 10)
+        //        quickSortDutch(array: &list, low: 0, high: list.count-1)
+        //        print(list)
+        
+        //        var list = [ 10, 0, 3, 9, 2, 14, 26, 27, 1, 5, 8, -1, 8 ]
+        //        quickSortLumoto(array: &list, low: 0, high: list.count - 1)
+        //        print(list)
+        //        binarySearch(numbers, key: 43, range: 0 ..< numbers.count)
+        //        let arr = Heap.heapsort(array:[3, 5, 8, 1, 2, 9], order: >) // [1, 2, 3, 5, 8, 9]
+        //        print(arr)
+        
+        //        var array = [1, 2, 3, 4, 5, 6, 7]
+        //        shuffleArray(array: &array)
+        //        //let bool = hasPairSum(array: array, sum: 8)
+        //        print(array)
+        //
+        //        let resut = minChange(coins: [1, 3, 4], sum: 5)
+        //        print(resut)
         
         let change = CoinChange()
         let value  = change.minNumCoinsForMakingChangeDP(change: 63, coins: [25,10,5,1])
         print(value)
-//
+        //
     }
     
     class WrappedCache<Key, Value> where Key: AnyObject, Value: AnyObject {
