@@ -7,9 +7,143 @@
 //
 
 
-
-
 import UIKit
+
+
+//a basic vertex data structure
+
+public class Vertex {
+    var key: String?
+    var neighbors: Array<Edge> = []
+    var isVisited: Bool = false
+
+    
+    init() {
+        self.neighbors = Array<Edge>()
+    }
+    
+}
+
+//a basic edge data structure
+
+public class Edge {
+    
+    var neighbor: Vertex
+    var weight: Int
+    
+    init() {
+        weight = 0
+        self.neighbor = Vertex()
+    }
+    
+}
+
+//a default directed graph canvas
+public class SwiftGraph {
+    
+    private var canvas: Array<Vertex>
+    public var isDirected: Bool
+    
+    init() {
+        canvas = Array<Vertex>()
+        isDirected = true
+    }
+    
+    //create a new vertex
+    func addVertex(key: String) -> Vertex {
+        
+        //set the key
+        let childVertex: Vertex = Vertex()
+        childVertex.key = key
+        
+        
+        //add the vertex to the graph canvas
+        canvas.append(childVertex)
+        
+        return childVertex
+    }
+    
+    //add an edge to source vertex
+    func addEdge(source: Vertex, neighbor: Vertex, weight: Int) {
+        
+        //create a new edge
+        let newEdge = Edge()
+        
+        //default properties
+        newEdge.neighbor = neighbor
+        newEdge.weight = weight
+        source.neighbors.append(newEdge)
+        
+        //check for undirected graph
+        if (isDirected == false) {
+            
+            //create a new reversed edge
+            let reverseEdge = Edge()
+            
+            //establish the reversed properties
+            reverseEdge.neighbor = source
+            reverseEdge.weight = weight
+            neighbor.neighbors.append(reverseEdge)
+        }
+    }
+    
+    //breadth-first traversal
+    func traverseGraphBFS(startingVertex: Vertex) {
+        
+        //establish a new queue
+        var graphQueue: Queue<Vertex> = Queue<Vertex>()
+        
+        //queue a starting vertex
+        graphQueue.enqueue(startingVertex)
+        
+        while !graphQueue.isEmpty {
+            
+            //traverse the next queued vertex
+            let visitedItem = graphQueue.dequeue()
+            
+            //add unvisited vertices to the queue
+            for nearbyNeighbor in visitedItem!.neighbors {
+                if nearbyNeighbor.neighbor.isVisited == false {
+                    graphQueue.enqueue(nearbyNeighbor.neighbor)
+                }
+            }
+            visitedItem?.isVisited = true
+        } //end while
+    } //end function
+}
+
+
+public struct Queue<T> {
+    fileprivate var array = [T]()
+    
+    public var isEmpty: Bool {
+        return array.isEmpty
+    }
+    
+    public var count: Int {
+        return array.count
+    }
+    
+    public mutating func enqueue(_ element: T) {
+        array.append(element)
+    }
+    
+    public mutating func dequeue() -> T? {
+        if isEmpty {
+            return nil
+        } else {
+            return array.removeFirst()
+        }
+    }
+    
+    public var front: T? {
+        return array.first
+    }
+}
+
+
+
+
 
 struct HashTable<Key: Hashable,  Value> {
     typealias Element = (key: Key, value: Value)
