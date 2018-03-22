@@ -15,9 +15,18 @@ public class Vertex {
     var key: String?
     var neighbors: Array<Edge> = []
     var isVisited: Bool = false
+    var distance: Int?
     
     init() {
         self.neighbors = Array<Edge>()
+    }
+    
+    func remove(edge: Edge) {
+        neighbors.remove(at: neighbors.index { $0 === edge }!)
+    }
+    
+    public var hasDistance: Bool {
+        return distance != nil
     }
 }
 
@@ -31,7 +40,6 @@ public class Edge {
         weight = 0
         self.neighbor = Vertex()
     }
-    
 }
 
 
@@ -66,12 +74,10 @@ extension SwiftGraph {
 }
 
 
-
-
 //add edges of vertex
 extension SwiftGraph {
     
-//add an edge to source vertex
+    //add an edge to source vertex
     func addEdge(source: Vertex, neighbor: Vertex, weight: Int = 0) {
         
         //create a new edge
@@ -113,16 +119,16 @@ extension SwiftGraph {
         while !graphQueue.isEmpty {
             
             //traverse the next queued vertex
-            let vertex = graphQueue.dequeue()
+            let currentVertex = graphQueue.dequeue()
             
             //add unvisited vertices to the queue
-            for nearbyNeighbor in vertex!.neighbors {
-                if nearbyNeighbor.neighbor.isVisited == false {
-                    graphQueue.enqueue(nearbyNeighbor.neighbor)
+            for edge in currentVertex!.neighbors {
+                if edge.neighbor.isVisited == false {
+                    graphQueue.enqueue(edge.neighbor)
                 }
             }
-            vertex?.isVisited = true
-            print("traversed vertex: \(vertex!.key!)..")
+            currentVertex?.isVisited = true
+            print("traversed vertex: \(currentVertex!.key!)..")
         } //end while
     } //end function
 }
@@ -134,17 +140,48 @@ extension SwiftGraph {
         
         var nodesExplored = [String(describing: startingVertex.key!)]
         startingVertex.isVisited = true
-
+        
         //add unvisited vertices to the queue
-        for nearbyNeighbor in startingVertex.neighbors {
-            if nearbyNeighbor.neighbor.isVisited == false {
-                nodesExplored += depthFirstSearch(startingVertex: nearbyNeighbor.neighbor)
+        for edge in startingVertex.neighbors {
+            if edge.neighbor.isVisited == false {
+                nodesExplored += depthFirstSearch(startingVertex: edge.neighbor)
             }
         }
         return nodesExplored
     } //end function
 }
 
+
+//minimum spanning tree of graph
+extension SwiftGraph {
+    
+    func bfsShortestPath(graph: SwiftGraph,startingVertex: Vertex) {
+        
+        //establish a new queue
+        var graphQueue: Queue<Vertex> = Queue<Vertex>()
+        
+        startingVertex.distance = 0
+        
+        //queue a starting vertex
+        graphQueue.enqueue(startingVertex)
+        
+        while !graphQueue.isEmpty {
+            
+            //traverse the next queued vertex
+            let currentVertex = graphQueue.dequeue()
+            
+            //add unvisited vertices to the queue
+            for edge in currentVertex!.neighbors {
+                let neighborNode = edge.neighbor
+                if !neighborNode.hasDistance {
+                    graphQueue.enqueue(neighborNode)
+                    neighborNode.distance = currentVertex!.distance! + 1
+                }
+            }
+            print("Vertex \(String(describing: currentVertex!.key!)) distance from Vertex \(String(describing: startingVertex.key!)): \(currentVertex!.distance!) edges")
+        } //end while
+    } //end function
+}
 
 
 
@@ -1271,6 +1308,17 @@ class ViewController: UIViewController {
         let nodeG = graph.addVertex(key: "g")
         let nodeH = graph.addVertex(key: "h")
         
+//        graph.addEdge(source: nodeA, neighbor: nodeB)
+//        graph.addEdge(source: nodeA, neighbor: nodeC)
+//        graph.addEdge(source: nodeB, neighbor: nodeD)
+//        graph.addEdge(source: nodeB, neighbor: nodeE)
+//        graph.addEdge(source: nodeC, neighbor: nodeF)
+//        graph.addEdge(source: nodeC, neighbor: nodeG)
+//        graph.addEdge(source: nodeE, neighbor: nodeH)
+//        graph.addEdge(source: nodeE, neighbor: nodeF)
+//        graph.addEdge(source: nodeF, neighbor: nodeG)
+        
+        
         graph.addEdge(source: nodeA, neighbor: nodeB)
         graph.addEdge(source: nodeA, neighbor: nodeC)
         graph.addEdge(source: nodeB, neighbor: nodeD)
@@ -1278,17 +1326,14 @@ class ViewController: UIViewController {
         graph.addEdge(source: nodeC, neighbor: nodeF)
         graph.addEdge(source: nodeC, neighbor: nodeG)
         graph.addEdge(source: nodeE, neighbor: nodeH)
-        graph.addEdge(source: nodeE, neighbor: nodeF)
-        graph.addEdge(source: nodeF, neighbor: nodeG)
-        
-        let dfsTree = graph.depthFirstSearch(startingVertex: nodeA)
-        print("graph traversal complete.. \(dfsTree)")
         
         
+        // let dfsTree = graph.depthFirstSearch(startingVertex: nodeA)
+        //print("graph traversal complete.. \(dfsTree)")
         
-        //
+        graph.bfsShortestPath(graph: graph, startingVertex: nodeA)
+        
         //        var hashTable = HashTable<String, String>(capacity: 5)
-        ////
         //        hashTable["firstName"] = "Steve"
         //        hashTable["lastName"] = "Jobs"
         //        hashTable["hobbies"] = "Programming Swift"
