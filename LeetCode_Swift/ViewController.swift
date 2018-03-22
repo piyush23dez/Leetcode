@@ -152,7 +152,7 @@ extension SwiftGraph {
 }
 
 
-//minimum spanning tree of graph
+//find shortest path usinf BFS algorithm
 extension SwiftGraph {
     
     func bfsShortestPath(graph: SwiftGraph,startingVertex: Vertex) {
