@@ -13,16 +13,16 @@ import UIKit
 //a basic vertex data structure
 public class Vertex {
     var key: String?
-    var neighbors: Array<Edge> = []
+    var edges: Array<Edge> = []
     var isVisited: Bool = false
     var distance: Int?
     
     init() {
-        self.neighbors = Array<Edge>()
+        self.edges = Array<Edge>()
     }
     
     func remove(edge: Edge) {
-        neighbors.remove(at: neighbors.index { $0 === edge }!)
+        edges.remove(at: edges.index { $0 === edge }!)
     }
     
     public var hasDistance: Bool {
@@ -86,7 +86,7 @@ extension SwiftGraph {
         //default properties
         newEdge.neighbor = neighbor
         newEdge.weight = weight
-        source.neighbors.append(newEdge)
+        source.edges.append(newEdge)
         
         //check for undirected graph
         if isDirected == false {
@@ -97,7 +97,7 @@ extension SwiftGraph {
             //establish the reversed properties
             reverseEdge.neighbor = source
             reverseEdge.weight = weight
-            neighbor.neighbors.append(reverseEdge)
+            neighbor.edges.append(reverseEdge)
         }
     }
 }
@@ -122,7 +122,7 @@ extension SwiftGraph {
             let currentVertex = graphQueue.dequeue()
             
             //add unvisited vertices to the queue
-            for edge in currentVertex!.neighbors {
+            for edge in currentVertex!.edges {
                 if edge.neighbor.isVisited == false {
                     graphQueue.enqueue(edge.neighbor)
                 }
@@ -142,7 +142,7 @@ extension SwiftGraph {
         startingVertex.isVisited = true
         
         //add unvisited vertices to the queue
-        for edge in startingVertex.neighbors {
+        for edge in startingVertex.edges {
             if edge.neighbor.isVisited == false {
                 nodesExplored += depthFirstSearch(startingVertex: edge.neighbor)
             }
@@ -152,7 +152,7 @@ extension SwiftGraph {
 }
 
 
-//find shortest path usinf BFS algorithm
+//find shortest path using BFS algorithm
 extension SwiftGraph {
     
     func bfsShortestPath(graph: SwiftGraph,startingVertex: Vertex) {
@@ -171,7 +171,7 @@ extension SwiftGraph {
             let currentVertex = graphQueue.dequeue()
             
             //add unvisited vertices to the queue
-            for edge in currentVertex!.neighbors {
+            for edge in currentVertex!.edges {
                 let neighborNode = edge.neighbor
                 if !neighborNode.hasDistance {
                     graphQueue.enqueue(neighborNode)
