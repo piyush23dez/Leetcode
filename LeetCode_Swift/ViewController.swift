@@ -127,7 +127,7 @@ extension SwiftGraph {
     } //end function
 }
 
-
+//depth first search of graph
 extension SwiftGraph {
     
     func depthFirstSearch(startingVertex: Vertex) -> [String] {
