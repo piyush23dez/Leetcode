@@ -128,6 +128,23 @@ extension SwiftGraph {
 }
 
 
+extension SwiftGraph {
+    
+    func depthFirstSearch(startingVertex: Vertex) -> [String] {
+        
+        var nodesExplored = [String(describing: startingVertex.key!)]
+        startingVertex.isVisited = true
+
+        //add unvisited vertices to the queue
+        for nearbyNeighbor in startingVertex.neighbors {
+            if nearbyNeighbor.neighbor.isVisited == false {
+                nodesExplored += depthFirstSearch(startingVertex: nearbyNeighbor.neighbor)
+            }
+        }
+        return nodesExplored
+    } //end function
+}
+
 
 
 
@@ -1240,7 +1257,9 @@ class ViewController: UIViewController {
         return random
     }
     
+    
     override func viewDidLoad() {
+        
         let graph = SwiftGraph()
         
         let nodeA = graph.addVertex(key: "a")
@@ -1262,8 +1281,8 @@ class ViewController: UIViewController {
         graph.addEdge(source: nodeE, neighbor: nodeF)
         graph.addEdge(source: nodeF, neighbor: nodeG)
         
-        graph.traverseGraphBFS(startingVertex: nodeA)
-        print("graph traversal complete..")
+        let dfsTree = graph.depthFirstSearch(startingVertex: nodeA)
+        print("graph traversal complete.. \(dfsTree)")
         
         
         
