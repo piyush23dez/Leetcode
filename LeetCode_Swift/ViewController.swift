@@ -124,7 +124,8 @@ extension SwiftGraph {
             //add unvisited vertices to the queue
             for edge in currentVertex!.edges {
                 if edge.neighbor.isVisited == false {
-                    graphQueue.enqueue(edge.neighbor)
+                    let neighborNode = edge.neighbor
+                    graphQueue.enqueue(neighborNode)
                 }
             }
             currentVertex?.isVisited = true
@@ -144,7 +145,8 @@ extension SwiftGraph {
         //add unvisited vertices to the queue
         for edge in startingVertex.edges {
             if edge.neighbor.isVisited == false {
-                nodesExplored += depthFirstSearch(startingVertex: edge.neighbor)
+                let neighborNode = edge.neighbor
+                nodesExplored += depthFirstSearch(startingVertex: neighborNode)
             }
         }
         return nodesExplored
